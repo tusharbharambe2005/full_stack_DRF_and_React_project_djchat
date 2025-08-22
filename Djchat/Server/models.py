@@ -16,21 +16,13 @@ class Server(models.Model):
     descriptions = models.CharField(max_length=250, null=True,blank=True)
     member = models.ManyToManyField(settings.AUTH_USER_MODEL)
     def __str__(self):
-        return self.name
+        return f"{self.name}-id={self.id}"
     
 class Channel(models.Model):
     name = models.CharField(max_length=100)
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="channels"
-    )
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="channel_owner")
     topic = models.CharField(max_length=150, blank=True, null=True)
-    server = models.ForeignKey(
-        Server,
-        on_delete=models.CASCADE,
-        related_name="channels"
-    )
+    server = models.ForeignKey(Server,on_delete=models.CASCADE,related_name="channel_server")
 
     def __str__(self):
         return self.name
