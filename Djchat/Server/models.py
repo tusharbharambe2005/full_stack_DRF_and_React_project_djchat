@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.dispatch import receiver
-
+from .validator import validate_icon_image_size,valid_image_file_exstension
 
 def Channel_icon_uplpad_path(instance, filename):
     return f"Channel/{instance.id}/Channel_icon/{filename}"
@@ -16,7 +16,7 @@ def category_icon_upload_path(instance, filename):
 class Category(models.Model):
     name = models.CharField(max_length=100)
     Server = models.TextField(null=True, blank=True)
-    icon = models.FileField(upload_to=category_icon_upload_path, null=True, blank=True)
+    icon = models.FileField(upload_to=category_icon_upload_path, null=True, blank=True, validators=[validate_icon_image_size,valid_image_file_exstension])
     
     # thye are used the updateing the file privios are deleted and new are replace that
     def save(self, *args, **kwargs):
@@ -51,8 +51,8 @@ class Channel(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name="channel_owner")
     topic = models.CharField(max_length=150, blank=True, null=True)
     server = models.ForeignKey(Server,on_delete=models.CASCADE,related_name="channel_server")
-    banner = models.ImageField(upload_to=Channel_banner_upload_path,null=True, blank=True)
-    icon = models.ImageField(upload_to=Channel_icon_uplpad_path,null=True,blank=True)
+    banner = models.ImageField(upload_to=Channel_banner_upload_path,null=True, blank=True, validators=[valid_image_file_exstension])
+    icon = models.ImageField(upload_to=Channel_icon_uplpad_path,null=True,blank=True,validators=[validate_icon_image_size, valid_image_file_exstension])
     
     
     def save(self,*args, **kwargs):
